@@ -299,7 +299,7 @@ html {
 
 /* Product showcase large mockup sizing (Apple-like) */
 .showcase-mockup {
-  max-width: 1200px;
+  max-width: 1300px;
   margin-left: auto;
   margin-right: auto;
   border-radius: 1rem;
@@ -307,9 +307,22 @@ html {
 }
 .showcase-mockup .mockup-viewport {
   width: 100%;
-  height: clamp(380px, 46vh, 720px);
+  height: clamp(520px, 56vh, 920px);
   display: block;
   object-fit: cover;
+}
+
+/* Large dashboard image helper for showcase */
+.dashboard-large {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: inherit !important;
+}
+
+.showcase-mockup {
+  border: 1px solid rgba(255,255,255,0.04);
 }
 
 /* Hero mockup video - fills the hero mockup area responsively */

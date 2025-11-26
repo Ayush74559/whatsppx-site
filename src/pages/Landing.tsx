@@ -199,8 +199,8 @@ export function Landing() {
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-slide-in">
-              <h2 className="text-4xl font-bold mb-4">Type anything. <span className="gradient-text">AI does everything.</span></h2>
-              <p className="text-lg text-muted-foreground mb-6">Instantly generate replies, build flows, and preview automation — all within an iPhone-like mockup. Try typing a customer question and see AI compose a context-aware response.</p>
+              <h2 className="text-4xl font-bold mb-4 apple-h2 white-intense">Type anything. <span className="white-intense">AI does everything.</span></h2>
+              <p className="apple-body white-intense mb-6">Instantly generate replies, build flows, and preview automation — all within an iPhone-like mockup. Try typing a customer question and see AI compose a context-aware response.</p>
               <div className="flex items-center space-x-4">
                 <Link to="/signup">
                   <Button className="bg-gradient-primary">Try Live Demo</Button>
@@ -232,7 +232,7 @@ export function Landing() {
 
           <div className="mb-10">
             <div className="showcase-mockup glass-card p-6 hover-glow mockup-float">
-              <img src="/media/dashboard-1.svg" alt="dashboard large" className="mockup-viewport rounded-md" />
+              <img src="/media/Screenshot%202025-11-26%20at%202.58.40%E2%80%AFPM.png" alt="dashboard large" className="mockup-viewport rounded-md dashboard-large" />
             </div>
           </div>
 
