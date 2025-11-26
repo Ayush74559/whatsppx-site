@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { useRequireAuth } from '@/hooks/useAuth';
 import { Save, User, Building2, Phone, CreditCard, CheckCircle2, XCircle } from 'lucide-react';
 import { whatsappService } from '@/services/whatsappService';
+import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/stores/authStore';
+import { mapSupabaseUser } from '@/lib/auth';
 import { toast } from 'sonner';
 
 export function Settings() {
@@ -19,6 +22,12 @@ export function Settings() {
     access_token: '',
     webhook_verify_token: '',
     is_connected: false,
+  });
+  const { user: authUser, login: setAuthUser } = useAuthStore();
+
+  const [profile, setProfile] = useState({
+    username: authUser?.username || '',
+    email: authUser?.email || '',
   });
 
   useEffect(() => {
@@ -68,6 +77,40 @@ export function Settings() {
     }
   };
 
+  const handleSaveProfile = async () => {
+    setLoading(true);
+    try {
+      // Prepare payload for Supabase updateUser
+      const payload: any = { data: { username: profile.username } };
+      // If email changed, include it (Supabase will send confirmation email if required)
+      if (profile.email && profile.email !== authUser?.email) {
+        payload.email = profile.email;
+      }
+
+      const { data, error } = await supabase.auth.updateUser(payload);
+      if (error) throw error;
+
+      // Update local auth store with new user data
+      if (data?.user) {
+        const mapped = mapSupabaseUser(data.user as any);
+        setAuthUser(mapped);
+      } else {
+        // Fallback: re-fetch session and update
+        const sessionRes = await supabase.auth.getSession();
+        if (sessionRes.data?.session?.user) {
+          setAuthUser(mapSupabaseUser(sessionRes.data.session.user));
+        }
+      }
+
+      toast.success('Profile updated successfully');
+    } catch (err: any) {
+      console.error('Error updating profile', err);
+      toast.error(err?.message || 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <DashboardLayout>
@@ -99,16 +142,27 @@ export function Settings() {
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" defaultValue={user?.username} className="mt-1" />
+                <Input
+                  id="username"
+                  value={profile.username}
+                  onChange={(e) => setProfile(p => ({ ...p, username: e.target.value }))}
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} className="mt-1" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={profile.email}
+                  onChange={(e) => setProfile(p => ({ ...p, email: e.target.value }))}
+                  className="mt-1"
+                />
               </div>
             </div>
-            <Button onClick={() => toast.success('Profile updated')} className="bg-gradient-primary">
+            <Button onClick={handleSaveProfile} disabled={loading} className="bg-gradient-primary">
               <Save className="w-5 h-5 mr-2" />
-              Save Profile
+              {loading ? 'Saving...' : 'Save Profile'}
             </Button>
           </div>
         </Card>
