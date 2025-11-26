@@ -129,7 +129,7 @@ export function Landing() {
           <div className="text-center max-w-4xl mx-auto animate-fade-in relative z-20">
             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass border border-border/50 mb-6 animate-fade-in">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">AI-Powered WhatsApp Automation</span>
+              <span className="text-sm font-medium white-intense">AI-Powered WhatsApp Automation</span>
             </div>
             <AppleTextReveal className="mb-6">Reinvent Your WhatsApp Business</AppleTextReveal>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
@@ -238,21 +238,51 @@ export function Landing() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="white-card p-6 hover-glow animate-scale-in showcase-card">
-              <img src="/media/dashboard-1.svg" alt="dashboard" className="w-full object-cover rounded-md mb-4" />
+              <div className="w-full rounded-md overflow-hidden mb-4 analytics-video" style={{height: 180}}>
+                <video
+                  src="/media/vedios/Dashboard.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="analytics-video__media"
+                  aria-hidden
+                />
+              </div>
               <div className="card-body">
                 <h3 className="apple-h3 mb-2">Dashboard</h3>
                 <p className="apple-body">Real-time insights and widget panels for your conversations.</p>
               </div>
             </Card>
             <Card className="white-card p-6 hover-glow animate-scale-in showcase-card">
-              <img src="/media/dashboard-2.svg" alt="analytics" className="w-full object-cover rounded-md mb-4" />
+              <div className="w-full rounded-md overflow-hidden mb-4 analytics-video" style={{height: 180}}>
+                <video
+                  src="/media/vedios/Analytics.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="analytics-video__media"
+                  aria-hidden
+                />
+              </div>
               <div className="card-body">
                 <h3 className="apple-h3 mb-2">Analytics</h3>
                 <p className="apple-body">Track response times, engagement, and conversion metrics.</p>
               </div>
             </Card>
             <Card className="white-card p-6 hover-glow animate-scale-in showcase-card">
-              <img src="/media/dashboard-3.svg" alt="flows" className="w-full object-cover rounded-md mb-4" />
+              <div className="w-full rounded-md overflow-hidden mb-4 analytics-video" style={{height: 180}}>
+                <video
+                  src={encodeURI('/media/vedios/Automation Flows.mp4')}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="analytics-video__media"
+                  aria-hidden
+                />
+              </div>
               <div className="card-body">
                 <h3 className="apple-h3 mb-2">Automation Flows</h3>
                 <p className="apple-body">Visual flow builder with conditional logic and actions.</p>
@@ -510,10 +540,10 @@ export function Landing() {
       <section className="py-20 px-4">
         <div className="section-container">
           <div className="glass-card rounded-2xl p-12 text-center max-w-4xl mx-auto hover-glow">
-            <h2 className="text-4xl font-bold mb-4">
+            <h2 className="text-4xl font-bold mb-4 white-intense">
               Ready to Transform Your <span className="gradient-text">Customer Experience?</span>
             </h2>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xl white-intense mb-8">
               Join hundreds of businesses automating their WhatsApp communication
             </p>
             <Link to="/signup">
