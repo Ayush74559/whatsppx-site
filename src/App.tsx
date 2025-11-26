@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { Landing } from '@/pages/Landing';
+import { About } from '@/pages/About';
 import { Login } from '@/pages/Login';
 import { Signup } from '@/pages/Signup';
 import { AuthCallback } from '@/pages/AuthCallback';
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/conversations" element={<Conversations />} />
