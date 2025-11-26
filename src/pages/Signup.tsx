@@ -66,8 +66,19 @@ export function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-primary/5">
-      <Card className="glass-card w-full max-w-md p-8 animate-scale-in">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background via-background to-primary/5 relative">
+      <div className="auth-video-wrap" aria-hidden="true">
+        <video
+          className="auth-bg-video"
+          src="/media/vedios/Untitled%20design.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="auth-video-overlay" aria-hidden="true" />
+      </div>
+      <Card className="glass-card w-full max-w-md p-8 animate-scale-in relative z-20">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-4">
             <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
