@@ -232,7 +232,7 @@ export function Landing() {
 
           <div className="mb-10">
             <div className="showcase-mockup glass-card p-6 hover-glow mockup-float">
-              <img src="/media/0a68a4e3-47c3-4684-a0d5-e2855dbc71b0.png" alt="dashboard large" className="mockup-viewport rounded-md dashboard-large" />
+              <img src="/media/Screenshot%202025-11-26%20at%202.58.40%E2%80%AFPM.png" alt="dashboard large" className="mockup-viewport rounded-md dashboard-large" />
             </div>
           </div>
 
