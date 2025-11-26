@@ -245,6 +245,25 @@ export function Analytics() {
             </div>
           </div>
         </Card>
+
+        {/* Video walkthrough / demo — fills the card and matches rounded corners */}
+        <Card className="glass-card p-0 overflow-hidden hover-glow">
+          <div className="analytics-video w-full h-64 md:h-96 lg:h-80 relative">
+            <video
+              src="/media/vedios/Analytics.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="analytics-video__media"
+              aria-hidden
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-1">Analytics Walkthrough</h3>
+            <p className="text-sm text-muted-foreground">A short demo showcasing response time tracking, engagement graphs, and conversion metrics.</p>
+          </div>
+        </Card>
       </div>
     </DashboardLayout>
   );

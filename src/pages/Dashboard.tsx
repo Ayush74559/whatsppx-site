@@ -89,6 +89,25 @@ export function Dashboard() {
           </p>
         </div>
 
+        {/* Video demo: fills card and matches rounded corners */}
+        <Card className="glass-card p-0 overflow-hidden hover-glow">
+          <div className="analytics-video w-full h-48 md:h-64 lg:h-72 relative">
+            <video
+              src="/media/vedios/Analytics.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="analytics-video__media"
+              aria-hidden
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="text-lg font-semibold mb-1">Real-time insights</h3>
+            <p className="text-sm text-muted-foreground">Track response times, engagement, and conversion metrics at a glance.</p>
+          </div>
+        </Card>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => {

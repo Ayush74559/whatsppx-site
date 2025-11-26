@@ -72,6 +72,13 @@ if (error) throw error;
           playsInline
         />
         <div className="auth-video-overlay" aria-hidden="true" />
+
+        {/* Subtle credit card over the video with founder details */}
+        <div className="auth-video-credit hidden sm:flex flex-col p-3 rounded-md glass-card text-left" aria-hidden>
+          <span className="font-semibold">Ayush Jaat</span>
+          <span className="text-sm text-muted-foreground">Founder — WhatsApp X</span>
+          <a href="mailto:Ayush1628jaat@gmail.com" className="text-sm text-primary mt-1">Ayush1628jaat@gmail.com</a>
+        </div>
       </div>
       <Card className="glass-card w-full max-w-md p-8 animate-scale-in relative z-20">
         <div className="text-center mb-8">
