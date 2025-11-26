@@ -81,10 +81,10 @@ export function Dashboard() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome back, <span className="gradient-text">{user?.username}</span>!
+          <h1 className="text-3xl font-bold mb-2 white-intense">
+            Welcome back, <span className="white-intense">{user?.username}</span>!
           </h1>
-          <p className="text-muted-foreground">
+          <p className="apple-body white-intense">
             Here's what's happening with your WhatsApp business today.
           </p>
         </div>
@@ -107,8 +107,8 @@ export function Dashboard() {
                     {stat.change}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                <p className="text-3xl font-bold">{stat.value}</p>
+                <p className="text-sm white-intense mb-1">{stat.label}</p>
+                <p className="text-3xl font-bold white-intense">{stat.value}</p>
               </Card>
             );
           })}
@@ -120,7 +120,7 @@ export function Dashboard() {
           <Card className="glass-card p-6 hover-glow">
             <div className="flex items-center space-x-2 mb-6">
               <BarChart className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-semibold">Message Activity</h2>
+              <h2 className="text-xl font-semibold white-intense">Message Activity</h2>
             </div>
             {analytics && analytics.messagesData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -166,30 +166,30 @@ export function Dashboard() {
           <Card className="glass-card p-6 hover-glow">
             <div className="flex items-center space-x-2 mb-6">
               <Zap className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-semibold">Quick Actions</h2>
+              <h2 className="text-xl font-semibold white-intense">Quick Actions</h2>
             </div>
             <div className="space-y-3">
               <button className="w-full text-left p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                <p className="font-medium mb-1">Set up auto-replies</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium mb-1 white-intense">Set up auto-replies</p>
+                <p className="text-sm white-intense">
                   Automate responses to common questions
                 </p>
               </button>
               <button className="w-full text-left p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                <p className="font-medium mb-1">View conversations</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium mb-1 white-intense">View conversations</p>
+                <p className="text-sm white-intense">
                   Check active customer chats
                 </p>
               </button>
               <button className="w-full text-left p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                <p className="font-medium mb-1">Send broadcast</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium mb-1 white-intense">Send broadcast</p>
+                <p className="text-sm white-intense">
                   Message multiple customers at once
                 </p>
               </button>
               <button className="w-full text-left p-4 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                <p className="font-medium mb-1">Manage CRM</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium mb-1 white-intense">Manage CRM</p>
+                <p className="text-sm white-intense">
                   Update customer information and tags
                 </p>
               </button>
