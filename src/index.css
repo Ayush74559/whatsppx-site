@@ -1,0 +1,494 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Apple-style color tokens (black & white palette + accent) */
+    --color-pure-white: #ffffff;
+    --color-deep-black: #000000;
+    --color-light-grey: #F5F5F7;
+    --color-line-grey: #1C1C1E;
+    --color-apple-blue: #0071E3;
+
+    /* semantic tokens used by Tailwind config */
+    --background: 0 0% 0%; /* black */
+    --foreground: 0 0% 100%; /* white */
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 210 100% 44%; /* apple blue (hsl for utility) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 68%;
+    --accent: 210 100% 44%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 210 100% 44%;
+    --radius: 0.375rem;
+    --page-vertical-spacing: 120px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-sm border border-border/50;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reveal animation for text/elements */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px) scale(.995);
+  transition: opacity 620ms cubic-bezier(.2,.9,.2,1), transform 620ms cubic-bezier(.2,.9,.2,1);
+  will-change: opacity, transform;
+}
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Text reveal: Apple-style cinematic */
+@keyframes text-reveal-apple {
+  0% { opacity: 0; transform: translateY(20px) scale(1.03); }
+  50% { opacity: 0.6; transform: translateY(8px) scale(1.02); }
+ 100% { opacity: 1; transform: translateY(0) scale(1.0); }
+}
+
+.text-reveal {
+  display: inline-block;
+  opacity: 0;
+  transform-origin: center;
+  animation-name: text-reveal-apple;
+  animation-duration: 900ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: opacity, transform, filter;
+}
+
+/* per-letter wrapper used by the component; we'll stagger using inline styles */
+.text-reveal__char {
+  display: inline-block;
+  backface-visibility: hidden;
+  filter: blur(0px);
+  transition: filter 320ms ease;
+}
+.text-reveal__char.moving { filter: blur(1.5px); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .text-reveal { animation: none !important; transform: none !important; opacity: 1 !important; }
+  .text-reveal__char { filter: none !important; }
+}
+
+/* Parallax helper */
+.parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Apple typography tokens and classes */
+:root {
+  --apple-black: #1d1d1f;
+  --apple-grey: #6e6e73;
+  --apple-bg: #ffffff;
+  --apple-muted: #6e6e73;
+  --apple-white: #ffffff;
+  --apple-white-strong: #ffffff;
+}
+
+/* Primary SF Pro stack with sensible fallbacks */
+/* Body font-family is set in the base layer above to avoid duplication */
+
+.apple-h1 {
+  font-family: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  /* Mobile: 36-44, Desktop: 72-96 — responsive with clamp */
+  font-size: clamp(36px, 6.5vw, 96px);
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  color: var(--apple-black);
+  -webkit-font-smoothing: antialiased;
+}
+
+.apple-h2 {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  /* Desktop 48-64, Mobile 28-34 */
+  font-size: clamp(28px, 4.6vw, 64px);
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  color: var(--apple-black);
+}
+
+.apple-h3 {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 500;
+  /* Desktop 28-36, Mobile 18-22 */
+  font-size: clamp(18px, 2.8vw, 36px);
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  color: var(--apple-black);
+}
+
+.apple-body {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  /* Body: 15-19 */
+  font-size: clamp(15px, 1.6vw, 19px);
+  line-height: 1.68;
+  letter-spacing: 0em;
+  color: var(--apple-black);
+}
+
+.apple-small {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 1.1vw, 15px);
+  line-height: 1.4;
+  color: var(--apple-grey);
+}
+
+.apple-button {
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: clamp(14px, 2.2vw, 17px);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  line-height: 1.2;
+  color: var(--apple-black);
+}
+
+/* Utility classes to use the primary/secondary color styles */
+.apple-text-primary { color: var(--apple-black); }
+.apple-text-secondary { color: var(--apple-grey); }
+
+/* Maintain minimal, calm text — avoid heavy shadows or glows */
+.apple-no-glow, .apple-no-shadow { text-shadow: none; box-shadow: none; }
+
+/* Small helper for leading/heading tightness */
+.apple-heading-tight { line-height: 1.04; letter-spacing: -0.02em; }
+
+/* New refined reveal for Apple-style text */
+@keyframes apple-text-reveal {
+  0% { opacity: 0; transform: translateY(14px) scale(1.03); filter: blur(2px); }
+  50% { opacity: 0.6; transform: translateY(8px) scale(1.015); filter: blur(1px); }
+ 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+}
+
+.apple-text-reveal {
+  display: inline-block;
+  opacity: 0;
+  animation-name: apple-text-reveal;
+  animation-duration: 900ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: opacity, transform, filter;
+}
+.apple-char {
+  display: inline-block;
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apple-text-reveal { animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+/* Cinematic motion utilities */
+.animate-fade-in {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: cinematic-fade 620ms cubic-bezier(.22,.12,.08,1) forwards;
+}
+.animate-slide-up {
+  opacity: 0;
+  transform: translateY(18px) scale(.995);
+  animation: cinematic-slide-up 720ms cubic-bezier(.22,.12,.08,1) forwards;
+}
+.animate-slide-in {
+  opacity: 0;
+  transform: translateX(-12px);
+  animation: cinematic-slide-in 720ms cubic-bezier(.22,.12,.08,1) forwards;
+}
+.animate-scale-in {
+  opacity: 0;
+  transform: scale(.992) translateY(8px);
+  animation: cinematic-scale-in 720ms cubic-bezier(.22,.12,.08,1) forwards;
+}
+
+@keyframes cinematic-fade {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cinematic-slide-up {
+  0% { opacity: 0; transform: translateY(18px) scale(.995); }
+  60% { opacity: .8; transform: translateY(6px) scale(.998); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes cinematic-slide-in {
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes cinematic-scale-in {
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* subtle floating for hero mockup */
+.mockup-float { animation: mockup-float 8s ease-in-out infinite; }
+@keyframes mockup-float {
+  0% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+  50% { transform: translateY(-6px) rotateX(0.2deg) rotateY(-0.2deg); }
+  100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+}
+
+/* Product showcase large mockup sizing (Apple-like) */
+.showcase-mockup {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.showcase-mockup .mockup-viewport {
+  width: 100%;
+  height: clamp(520px, 56vh, 920px);
+  display: block;
+  object-fit: cover;
+}
+
+/* Large dashboard image helper for showcase */
+.dashboard-large {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: inherit !important;
+}
+
+.showcase-mockup {
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Hero mockup video - fills the hero mockup area responsively */
+.hero-mockup-viewport video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-mockup-viewport img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Slightly larger cards inside showcase */
+.showcase-card img { height: 240px; }
+.showcase-card .card-body { padding-top: 1rem; padding-bottom: 1rem; }
+
+/* High-contrast white card for Automation Flow */
+.white-card {
+  background: var(--apple-bg);
+  color: var(--apple-black);
+  border: 1px solid rgba(29,29,31,0.06);
+  box-shadow: 0 8px 24px rgba(29,29,31,0.06);
+}
+.white-card .card-body { padding-top: 1rem; padding-bottom: 1rem; }
+.white-card .apple-h3 { color: var(--apple-black); }
+  .white-card .apple-body { color: var(--apple-black); }
+/* Make sure utility classes like `text-muted-foreground` don't hide copy inside white cards */
+  .white-card .text-muted-foreground,
+  .white-card .text-muted,
+  .white-card p,
+  .white-card h3,
+  .white-card h4,
+  .white-card span {
+    color: var(--apple-black) !important;
+  }
+
+/* Strong white emphasis utility */
+.white-intense {
+  color: var(--apple-white) !important;
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.22);
+  letter-spacing: 0.004em;
+}
+
+/* Dark background wrapper for sections that need high contrast */
+.dark-section {
+  background: #0b0b0b;
+  color: #ffffff;
+}
+.dark-section .apple-body,
+.dark-section p,
+.dark-section .apple-h2,
+.dark-section .apple-h3 {
+  color: var(--apple-white) !important;
+}
+
+/* When placed inside a dark section, white-card should look crisp */
+.dark-section .white-card {
+  background: var(--apple-white) !important;
+  color: var(--apple-black) !important;
+  border: 1px solid rgba(17,17,17,0.06) !important;
+  box-shadow: 0 20px 44px rgba(17,17,17,0.14) !important;
+}
+.dark-section .white-card h3,
+.dark-section .white-card p { color: var(--apple-black) !important; }
+
+/* Automation Flow: gradient background and intensified white card */
+.flow-gradient {
+  /* Default: slightly stronger, still subtle */
+  background: linear-gradient(180deg, rgba(0,113,227,0.12) 0%, rgba(128,90,213,0.08) 45%, rgba(7,7,7,0.04) 100%);
+  color: #ffffff;
+}
+.flow-gradient .apple-h2,
+.flow-gradient p { color: var(--apple-white) !important; }
+
+/* Variants: soft (lighter) and vivid (stronger) */
+.flow-gradient--soft { background: linear-gradient(180deg, rgba(0,113,227,0.06) 0%, rgba(128,90,213,0.04) 50%, rgba(0,0,0,0.02) 100%); }
+.flow-gradient--vivid { background: linear-gradient(180deg, rgba(0,113,227,0.22) 0%, rgba(128,90,213,0.16) 45%, rgba(0,0,0,0.06) 100%); }
+
+.white-card--intense {
+  background: #ffffff !important;
+  color: #0b0b0b !important;
+  border: 1px solid rgba(17,17,17,0.08) !important;
+  box-shadow: 0 24px 60px rgba(17,17,17,0.18) !important;
+  transform: translateZ(0);
+}
+.white-card--intense .apple-h3,
+.white-card--intense p { color: rgba(17,17,17,0.96) !important; }
+
+/* Slightly increase white-intense visibility */
+.white-intense { color: var(--apple-white) !important; font-weight: 700; text-shadow: 0 2px 6px rgba(0,0,0,0.18); }
+
+/* WhatsApp message bubble styles */
+.message-bubble {
+  @apply rounded-lg px-4 py-2 max-w-[75%] break-words;
+}
+
+.message-sent {
+  @apply bg-whatsapp text-white ml-auto;
+}
+
+.message-received {
+  @apply bg-secondary text-foreground;
+}
+
+/* Auth background video wrapper */
+.auth-video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.auth-video-wrap .auth-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.auth-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.36);
+  z-index: 1;
+}
+
+/* Analytics video card — ensure video fills card and respects rounded corners */
+.analytics-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+}
+.analytics-video__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Small accessibility: reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .analytics-video__media { animation: none; }
+}
+
+/* Apple Flow Diagram glow highlight */
+.glow-highlight {
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+  from {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+  }
+  to {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+  }
+}
