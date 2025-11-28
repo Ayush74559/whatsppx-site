@@ -1,8 +1,15 @@
 {
   "name": "whatsapp-webhook-backend",
   "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "echo 'Serverless functions - no build needed'"
+    "start": "node index.js",
+    "dev": "node index.js",
+    "build": "echo 'Express app - no build needed'"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
   },
   "engines": {
     "node": ">=18.0.0"
