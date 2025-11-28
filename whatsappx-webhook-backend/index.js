@@ -87,5 +87,38 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+// WhatsApp API endpoints for frontend
+app.post('/api/subscribe-webhooks', async (req, res) => {
+  try {
+    const { businessAccountId, systemUserToken } = req.body;
+
+    if (!businessAccountId || !systemUserToken) {
+      return res.status(400).json({ error: 'Business Account ID and System User Token are required' });
+    }
+
+    const response = await fetch(`https://graph.facebook.com/v24.0/${businessAccountId}/subscribed_apps`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${systemUserToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}), // Empty JSON body
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success === true) {
+      console.log('✅ Successfully subscribed to webhooks via backend');
+      res.json({ success: true, message: 'Successfully subscribed to webhooks' });
+    } else {
+      console.error('❌ Failed to subscribe to webhooks:', data);
+      res.status(response.status).json({ success: false, error: data });
+    }
+  } catch (error) {
+    console.error('❌ Error subscribing to webhooks:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Export for Vercel
 export default app;

@@ -32,7 +32,14 @@ export function Settings() {
 
   useEffect(() => {
     loadConnection();
-  }, []);
+    // Update profile state when authUser changes
+    if (authUser) {
+      setProfile({
+        username: authUser.username || '',
+        email: authUser.email || '',
+      });
+    }
+  }, [authUser]);
 
   const loadConnection = async () => {
     try {
@@ -64,14 +71,53 @@ export function Settings() {
   };
 
   const handleTestConnection = async () => {
+    if (!connection.phone_number_id || !connection.access_token) {
+      toast.error('Please enter Phone Number ID and Access Token first');
+      return;
+    }
+
     setLoading(true);
     try {
-      const isConnected = await whatsappService.testConnection();
+      const isConnected = await whatsappService.testConnection(
+        connection.phone_number_id,
+        connection.access_token
+      );
+
       await whatsappService.updateConnection({ is_connected: isConnected });
       setConnection(prev => ({ ...prev, is_connected: isConnected }));
-      toast.success('Connection test successful!');
+
+      if (isConnected) {
+        toast.success('WhatsApp API connection test successful!');
+      } else {
+        toast.error('Connection test failed. Please check your credentials.');
+      }
     } catch (error: unknown) {
       toast.error((error instanceof Error ? error.message : 'Connection test failed'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubscribeToWebhooks = async () => {
+    if (!connection.business_account_id || !connection.access_token) {
+      toast.error('Please enter Business Account ID and Access Token first');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const success = await whatsappService.subscribeToWebhooks(
+        connection.business_account_id,
+        connection.access_token
+      );
+
+      if (success) {
+        toast.success('Successfully subscribed to WhatsApp webhooks!');
+      } else {
+        toast.error('Failed to subscribe to webhooks. Please check your credentials and try again.');
+      }
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to subscribe to webhooks'));
     } finally {
       setLoading(false);
     }
@@ -239,14 +285,17 @@ export function Settings() {
               </ol>
             </div>
             <div className="flex space-x-3">
-              <Button onClick={handleSaveConnection} disabled={loading} className="bg-gradient-primary">
-                <Save className="w-5 h-5 mr-2" />
-                {loading ? 'Saving...' : 'Save Settings'}
-              </Button>
-              <Button onClick={handleTestConnection} disabled={loading} variant="outline">
-                Test Connection
-              </Button>
-            </div>
+               <Button onClick={handleSaveConnection} disabled={loading} className="bg-gradient-primary">
+                 <Save className="w-5 h-5 mr-2" />
+                 {loading ? 'Saving...' : 'Save Settings'}
+               </Button>
+               <Button onClick={handleTestConnection} disabled={loading} variant="outline">
+                 Test Connection
+               </Button>
+               <Button onClick={handleSubscribeToWebhooks} disabled={loading} variant="outline">
+                 Subscribe to Webhooks
+               </Button>
+             </div>
           </div>
         </Card>
 
