@@ -1,7 +1,9 @@
 {
   "name": "whatsapp-webhook-backend",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "build": "echo 'Serverless functions - no build needed'"
+  },
   "engines": {
     "node": ">=18.0.0"
   }
