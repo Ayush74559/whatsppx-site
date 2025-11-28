@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "^\/(?!assets\/|api\/|_next\/|media\/|favicon.ico|robots.txt)(.*)$",
       "dest": "/index.html"
     }
   ]
