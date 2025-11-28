@@ -2,6 +2,17 @@ import React from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Bot, Zap, MessageSquare, Users, BarChart3, Globe, Clock, Shield, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 type Feature = {
   title: string;
@@ -29,10 +40,19 @@ const iconMap = {
   'Automation Flows': Zap,
 };
 
+// Route mapping for showcase features
+const routeMap = {
+  'Dashboard': '/dashboard',
+  'Analytics': '/analytics',
+  'Automation Flows': '/flows',
+};
+
 export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px", amount: 0.1 });
   const [hasBeenVisible, setHasBeenVisible] = React.useState(false);
+  const [selectedFeature, setSelectedFeature] = React.useState<Feature | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   // Track if element has ever been visible
   React.useEffect(() => {
@@ -56,6 +76,7 @@ export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) 
   }, []);
 
   return (
+    <>
     <motion.div
       ref={(node) => {
         ref.current = node;
@@ -106,6 +127,7 @@ export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) 
               }
             }}
             className="relative group cursor-pointer"
+            onClick={() => { setSelectedFeature(feature); setIsDialogOpen(true); }}
           >
             {/* Light sweep effect */}
             <motion.div
@@ -123,7 +145,7 @@ export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) 
               {/* Video/Icon section */}
               <div className="relative mb-4">
                 {feature.videoSrc ? (
-                  <div className="w-full rounded-md overflow-hidden analytics-video" style={{ height: 180 }}>
+                  <div className="w-full rounded-md overflow-hidden analytics-video" style={{ height: 'clamp(140px, 20vh, 180px)' }}>
                     <video
                       src={feature.videoSrc}
                       autoPlay
@@ -154,14 +176,6 @@ export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) 
                         transition: { duration: 0.3 }
                       }}
                     >
-                      {/* Animated background glow */}
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-2xl"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={hasBeenVisible ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                        transition={{ delay: 0.6 + index * 0.2, duration: 0.5 }}
-                      />
-
                       <motion.div
                         animate={hasBeenVisible ? {
                           scale: [1, 1.2, 1],
@@ -222,6 +236,34 @@ export const AppleFeatureGrid: React.FC<Props> = ({ features, className = '' }) 
         );
       })}
     </motion.div>
+
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="max-w-4xl">
+        {selectedFeature && (
+          <>
+            <DialogHeader>
+              <DialogTitle>{selectedFeature.title}</DialogTitle>
+              <DialogDescription>{selectedFeature.description}</DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              {selectedFeature.videoSrc ? (
+                <video src={selectedFeature.videoSrc} autoPlay muted loop playsInline className="w-full rounded-lg" />
+              ) : (
+                <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">No video</div>
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <Link to={routeMap[selectedFeature.title as keyof typeof routeMap] || '/' }>
+                <Button>
+                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
 

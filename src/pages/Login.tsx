@@ -37,8 +37,8 @@ export function Login() {
         });
         navigate('/dashboard');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to login');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to login'));
       setLoading(false);
     }
   };
@@ -53,9 +53,9 @@ export function Login() {
       });
 if (error) throw error;
       // Supabase will redirect to the OAuth provider. Session handled on redirect back.
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.log(err)
-      toast.error(err.message || 'Google sign-in failed');
+      toast.error((err instanceof Error ? err.message : 'Google sign-in failed'));
       setLoading(false);
     }
   };

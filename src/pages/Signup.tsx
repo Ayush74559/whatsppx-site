@@ -44,8 +44,8 @@ export function Signup() {
         });
         navigate('/dashboard');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create account');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to create account'));
       setLoading(false);
     }
   };
@@ -59,8 +59,8 @@ export function Signup() {
         options: { redirectTo },
       });
       if (error) throw error;
-    } catch (err: any) {
-      toast.error(err.message || 'Google sign-up failed');
+    } catch (err: unknown) {
+      toast.error((err instanceof Error ? err.message : 'Google sign-up failed'));
       setLoading(false);
     }
   };

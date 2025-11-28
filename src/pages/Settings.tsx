@@ -56,8 +56,8 @@ export function Settings() {
     try {
       await whatsappService.updateConnection(connection);
       toast.success('WhatsApp settings saved successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to save settings');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to save settings'));
     } finally {
       setLoading(false);
     }
@@ -70,8 +70,8 @@ export function Settings() {
       await whatsappService.updateConnection({ is_connected: isConnected });
       setConnection(prev => ({ ...prev, is_connected: isConnected }));
       toast.success('Connection test successful!');
-    } catch (error: any) {
-      toast.error(error.message || 'Connection test failed');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Connection test failed'));
     } finally {
       setLoading(false);
     }
@@ -103,9 +103,9 @@ export function Settings() {
       }
 
       toast.success('Profile updated successfully');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating profile', err);
-      toast.error(err?.message || 'Failed to update profile');
+      toast.error((err instanceof Error ? err.message : 'Failed to update profile'));
     } finally {
       setLoading(false);
     }

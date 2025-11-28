@@ -53,7 +53,7 @@
   .glass {
     @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
-  
+
   .glass-card {
     @apply bg-card/50 backdrop-blur-sm border border-border/50;
   }
@@ -92,6 +92,72 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  /* Better touch targets */
+  button, .cursor-pointer, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Better text rendering on mobile */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Safe area support for iOS */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Better scrolling on iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
+/* Android safe area support */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+}
+
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  /* Reduce motion for better performance */
+  * {
+    will-change: auto;
+  }
+
+  /* Optimize animations */
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-in,
+  .animate-scale-in {
+    animation-duration: 0.3s;
+  }
 }
 
 /* Reveal animation for text/elements */
@@ -378,7 +444,7 @@ html {
 
 /* Dark background wrapper for sections that need high contrast */
 .dark-section {
-  background: #0b0b0b;
+  background: black;
   color: #ffffff;
 }
 .dark-section .apple-body,

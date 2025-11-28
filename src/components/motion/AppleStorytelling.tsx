@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { CountUp } from '@/components/motion/CountUp';
 
 type Feature = {
   title: string;
@@ -20,207 +21,211 @@ type Props = {
 
 export const AppleStorytelling: React.FC<Props> = ({ title, subtitle, features, stats }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
   });
 
-  // Define reveal points for each element
-  const titleProgress = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
-  const titleY = useTransform(titleProgress, [0, 1], [12, 0]);
-  const titleBlur = useTransform(titleProgress, [0, 1], ['blur(4px)', 'blur(0px)']);
+  // Cinematic scroll-triggered reveals
+  const badgeProgress = useTransform(scrollYProgress, [0.1, 0.2], [0, 1]);
+  const titleProgress = useTransform(scrollYProgress, [0.15, 0.28], [0, 1]);
+  const subtitleProgress = useTransform(scrollYProgress, [0.2, 0.33], [0, 1]);
+  const featuresProgress = useTransform(scrollYProgress, [0.28, 0.45], [0, 1]);
+  const statsProgress = useTransform(scrollYProgress, [0.4, 0.55], [0, 1]);
 
-  const subtitleProgress = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
-  const subtitleY = useTransform(subtitleProgress, [0, 1], [12, 0]);
-  const subtitleBlur = useTransform(subtitleProgress, [0, 1], ['blur(4px)', 'blur(0px)']);
+  // Cinematic opacity reveals with blur effects
+  const badgeOpacity = useTransform(badgeProgress, [0, 0.3, 1], [0, 0.7, 1]);
+  const titleOpacity = useTransform(titleProgress, [0, 0.4, 1], [0, 0.8, 1]);
+  const subtitleOpacity = useTransform(subtitleProgress, [0, 0.3, 1], [0, 0.7, 1]);
+  const featuresOpacity = useTransform(featuresProgress, [0, 0.5, 1], [0, 0.6, 1]);
+  const statsOpacity = useTransform(statsProgress, [0, 0.4, 1], [0, 0.8, 1]);
 
-  const feature1Progress = useTransform(scrollYProgress, [0.2, 0.4], [0, 1]);
-  const feature1Y = useTransform(feature1Progress, [0, 1], [12, 0]);
-  const feature1Blur = useTransform(feature1Progress, [0, 1], ['blur(4px)', 'blur(0px)']);
+  // Blur to sharp transitions
+  const badgeBlur = useTransform(badgeProgress, [0, 0.6, 1], ['blur(8px)', 'blur(2px)', 'blur(0px)']);
+  const titleBlur = useTransform(titleProgress, [0, 0.5, 1], ['blur(10px)', 'blur(3px)', 'blur(0px)']);
+  const subtitleBlur = useTransform(subtitleProgress, [0, 0.4, 1], ['blur(6px)', 'blur(1px)', 'blur(0px)']);
+  const featuresBlur = useTransform(featuresProgress, [0, 0.6, 1], ['blur(4px)', 'blur(1px)', 'blur(0px)']);
+  const statsBlur = useTransform(statsProgress, [0, 0.5, 1], ['blur(6px)', 'blur(2px)', 'blur(0px)']);
 
-  const feature2Progress = useTransform(scrollYProgress, [0.3, 0.5], [0, 1]);
-  const feature2Y = useTransform(feature2Progress, [0, 1], [12, 0]);
-  const feature2Blur = useTransform(feature2Progress, [0, 1], ['blur(4px)', 'blur(0px)']);
+  // Scale effects for dramatic reveals
+  const titleScale = useTransform(titleProgress, [0, 0.7, 1], [0.95, 0.98, 1]);
+  const subtitleScale = useTransform(subtitleProgress, [0, 0.6, 1], [0.96, 0.98, 1]);
 
-  const feature3Progress = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
-  const feature3Y = useTransform(feature3Progress, [0, 1], [12, 0]);
-  const feature3Blur = useTransform(feature3Progress, [0, 1], ['blur(4px)', 'blur(0px)']);
-
-  const statsProgress = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
-  const statsY = useTransform(statsProgress, [0, 1], [12, 0]);
-  const statsBlur = useTransform(statsProgress, [0, 1], ['blur(4px)', 'blur(0px)']);
-
-  const textVariants = {
-    hidden: {
-      opacity: 0,
-      y: 12,
-      filter: 'blur(4px)',
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-    },
-  };
+  // Cinematic slide up animations
+  const badgeY = useTransform(badgeProgress, [0, 1], [25, 0]);
+  const titleY = useTransform(titleProgress, [0, 1], [40, 0]);
+  const subtitleY = useTransform(subtitleProgress, [0, 1], [30, 0]);
+  const featuresY = useTransform(featuresProgress, [0, 1], [50, 0]);
+  const statsY = useTransform(statsProgress, [0, 1], [35, 0]);
 
   return (
-    <div ref={containerRef} className="py-20">
-      <div className="section-container">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-slide-in">
-            <motion.div
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass border border-border/50 mb-6"
-              style={{
-                opacity: titleProgress,
-                y: useTransform(titleProgress, [0, 1], [12, 0]),
-                filter: useTransform(titleProgress, [0, 1], ['blur(4px)', 'blur(0px)']),
-              }}
-            >
-              <div className="w-4 h-4 rounded-full bg-whatsapp" />
-              <span className="text-sm font-medium white-intense">About WhatsAppX</span>
-            </motion.div>
+    <motion.div
+      ref={containerRef}
+      className="relative py-20 overflow-hidden bg-black"
+      style={{ position: 'relative' }}
+    >
+      {/* Pure black background with subtle ambient lighting */}
+      <div className="absolute inset-0 bg-black" />
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '0s', animationDuration: '4s' }} />
+        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-white/20 rounded-full animate-pulse" style={{ animationDelay: '2s', animationDuration: '6s' }} />
+        <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-white/25 rounded-full animate-pulse" style={{ animationDelay: '1s', animationDuration: '5s' }} />
+      </div>
 
-            <motion.h2
-              className="apple-h2 apple-heading-tight white-intense mb-6"
-              style={{
-                opacity: titleProgress,
-                y: useTransform(titleProgress, [0, 1], [12, 0]),
-                filter: useTransform(titleProgress, [0, 1], ['blur(4px)', 'blur(0px)']),
-              }}
-            >
+      <div className="section-container max-w-6xl mx-auto px-6 relative z-10">
+        <div className="text-center space-y-12">
+          {/* About Badge */}
+          <motion.div
+            className="inline-flex items-center space-x-3 px-6 py-3 rounded-full bg-black/20 border border-white/20 mx-auto shadow-2xl backdrop-blur-sm"
+            style={{
+              opacity: badgeOpacity,
+              y: badgeY,
+              filter: badgeBlur,
+            }}
+            transition={{
+              duration: 1.2,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+          >
+            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-green-400 to-green-500 shadow-lg" />
+            <span className="apple-small font-semibold tracking-wide uppercase white-intense">About WhatsAppX</span>
+          </motion.div>
+
+          {/* Main Title */}
+          <motion.div
+            className="space-y-4"
+            style={{
+              opacity: titleOpacity,
+              y: titleY,
+              filter: titleBlur,
+              scale: titleScale,
+            }}
+            transition={{
+              duration: 1.4,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+          >
+            <h1 className="apple-h1 apple-heading-tight text-6xl md:text-7xl lg:text-8xl font-bold leading-none white-intense">
               {title}
-            </motion.h2>
-
-            <motion.p
-              className="apple-body white-intense mb-6"
-              style={{
-                opacity: subtitleProgress,
-                y: useTransform(subtitleProgress, [0, 1], [12, 0]),
-                filter: useTransform(subtitleProgress, [0, 1], ['blur(4px)', 'blur(0px)']),
-              }}
-            >
-              {subtitle}
-            </motion.p>
-
-            <div className="space-y-4 mb-8">
-              <motion.div
-                className="flex items-start space-x-3"
-                style={{
-                  opacity: feature1Progress,
-                  y: feature1Y,
-                  filter: feature1Blur,
-                }}
-              >
-                <div className="w-8 h-8 rounded-lg bg-whatsapp/20 flex items-center justify-center flex-shrink-0">
-                  <div className="w-4 h-4 rounded-full bg-whatsapp" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{features[0]?.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {features[0]?.description}
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="flex items-start space-x-3"
-                style={{
-                  opacity: feature2Progress,
-                  y: feature2Y,
-                  filter: feature2Blur,
-                }}
-              >
-                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <div className="w-4 h-4 rounded-full bg-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{features[1]?.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {features[1]?.description}
-                  </p>
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="flex items-start space-x-3"
-                style={{
-                  opacity: feature3Progress,
-                  y: feature3Y,
-                  filter: feature3Blur,
-                }}
-              >
-                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
-                  <div className="w-4 h-4 rounded-full bg-gradient-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-1">{features[2]?.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {features[2]?.description}
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-
+            </h1>
+            {/* Subtle accent line */}
             <motion.div
-              className="flex items-center space-x-8"
-              style={{
-                opacity: statsProgress,
-                y: useTransform(statsProgress, [0, 1], [12, 0]),
-                filter: useTransform(statsProgress, [0, 1], ['blur(4px)', 'blur(0px)']),
-              }}
-            >
-              {stats.map((stat, index) => (
-                <div key={index}>
-                  <p className="text-3xl font-bold gradient-text mb-1">{stat.number}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
-          </div>
+              className="w-24 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent mx-auto rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              transition={{ duration: 1.0, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              viewport={{ once: true }}
+            />
+          </motion.div>
 
-          <div className="animate-slide-up">
-            {/* Right side content - you can add mockup or other elements here */}
-            <div className="glass-card rounded-2xl p-8 hover-glow">
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4 p-4 bg-whatsapp/10 rounded-lg border border-whatsapp/20">
-                  <div className="w-12 h-12 rounded-full bg-whatsapp flex items-center justify-center">
-                    <div className="w-6 h-6 rounded-full bg-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold">AI-Powered Intelligence</p>
-                    <p className="text-sm text-muted-foreground">
-                      Context-aware responses in 100+ languages
-                    </p>
-                  </div>
+          {/* Subtitle */}
+          <motion.div
+            className="max-w-4xl mx-auto"
+            style={{
+              opacity: subtitleOpacity,
+              y: subtitleY,
+              filter: subtitleBlur,
+              scale: subtitleScale,
+            }}
+            transition={{
+              duration: 1.2,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+          >
+            <p className="apple-body text-xl md:text-2xl lg:text-3xl leading-relaxed font-light tracking-wide white-intense">
+              {subtitle}
+            </p>
+          </motion.div>
+
+          {/* Feature Blocks */}
+          <motion.div
+            className="space-y-8 mt-20"
+            style={{
+              opacity: featuresOpacity,
+              y: featuresY,
+              filter: featuresBlur,
+            }}
+            transition={{
+              duration: 1.0,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+          >
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="max-w-2xl mx-auto p-6 rounded-2xl bg-transparent border border-white/20"
+                initial={isMobile ? { opacity: 0, scale: 0.96 } : { opacity: 0, y: 24, scale: 0.96, filter: 'blur(6px)' }}
+                whileInView={isMobile ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                whileHover={!isMobile ? { y: -8, boxShadow: '0 25px 50px rgba(0,0,0,0.25)' } : {}}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.1,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+                viewport={{ once: true }}
+              >
+                <div className="text-left">
+                  <h3 className="apple-h3 font-semibold mb-4 text-2xl md:text-3xl lg:text-4xl leading-tight white-intense">
+                    {feature.title}
+                  </h3>
+                  <p className="apple-body text-lg md:text-xl leading-relaxed white-intense font-light">
+                    {feature.description}
+                  </p>
                 </div>
-                <div className="flex items-center space-x-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                    <div className="w-6 h-6 rounded-full bg-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold">Lightning Fast</p>
-                    <p className="text-sm text-muted-foreground">
-                      Response times under 100ms
-                    </p>
-                  </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Stats Grid */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24"
+            style={{
+              opacity: statsOpacity,
+              y: statsY,
+              filter: statsBlur,
+            }}
+            transition={{
+              duration: 1.2,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="p-6 rounded-2xl bg-transparent border border-white/20 text-center"
+                initial={isMobile ? { opacity: 0, scale: 0.96 } : { opacity: 0, y: 24, scale: 0.96, filter: 'blur(6px)' }}
+                whileInView={isMobile ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                whileHover={!isMobile ? { y: -8, boxShadow: '0 25px 50px rgba(0,0,0,0.25)' } : {}}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.15,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+                viewport={{ once: true }}
+              >
+                <div>
+                  <p className="apple-h2 font-bold text-4xl md:text-5xl lg:text-6xl mb-3 white-intense">
+                    {stat.number}
+                  </p>
+                  <p className="apple-small white-intense font-medium uppercase tracking-wider">
+                    {stat.label}
+                  </p>
                 </div>
-                <div className="flex items-center space-x-4 p-4 bg-secondary rounded-lg">
-                  <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center">
-                    <div className="w-6 h-6 rounded-full bg-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold">Enterprise Security</p>
-                    <p className="text-sm text-muted-foreground">
-                      End-to-end encryption & GDPR compliant
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

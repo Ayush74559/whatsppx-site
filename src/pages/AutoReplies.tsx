@@ -53,8 +53,8 @@ export function AutoReplies() {
       await autoReplyService.toggleAutoReply(id, !enabled);
       setReplies(replies.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r)));
       toast.success('Auto-reply updated');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update auto-reply');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to update auto-reply'));
     }
   };
 
@@ -77,8 +77,8 @@ export function AutoReplies() {
       setNewReply({ name: '', trigger: 'keyword', keywords: '', response: '' });
       setShowNewForm(false);
       toast.success('Auto-reply created successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create auto-reply');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to create auto-reply'));
     }
   };
 
@@ -89,8 +89,8 @@ export function AutoReplies() {
       await autoReplyService.deleteAutoReply(id);
       setReplies(replies.filter((r) => r.id !== id));
       toast.success('Auto-reply deleted');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete auto-reply');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to delete auto-reply'));
     }
   };
 

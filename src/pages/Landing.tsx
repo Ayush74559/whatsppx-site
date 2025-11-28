@@ -17,14 +17,79 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import AppleTextReveal from '@/components/motion/AppleTextReveal';
 import ScrollTextReveal from '@/components/motion/ScrollTextReveal';
-import AppleFeatureGrid from '@/components/motion/AppleFeatureGrid';
+import { AppleFeatureGrid } from '@/components/motion/AppleFeatureGrid';
 import AppleFlowDiagram from '@/components/motion/AppleFlowDiagram';
 import AppleStorytelling from '@/components/motion/AppleStorytelling';
-import AppleTextScrollReveal from '@/components/motion/AppleTextScrollReveal';
+import { PremiumWhatsAppMockup } from '@/components/motion/PremiumWhatsAppMockup';
 import AppleDashboardReveal from '@/components/motion/AppleDashboardReveal';
 import AppleAnalyticsDashboard from '@/components/motion/AppleAnalyticsDashboard';
+import CinematicLetterReveal from '@/components/motion/CinematicLetterReveal';
+
+const ShowcaseTitle: React.FC = () => {
+  const titleRef = useRef(null);
+  const isTitleInView = useInView(titleRef, { once: false, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={titleRef}
+      className="apple-h2 apple-heading-tight white-intense"
+      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+      animate={isTitleInView ? {
+        opacity: 1,
+        scale: 1,
+        y: 0
+      } : {
+        opacity: 0,
+        scale: 0.8,
+        y: 20
+      }}
+      transition={{
+        duration: 1.2,
+        ease: [0.25, 0.1, 0.25, 1],
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }}
+    >
+      Product UI <span className="gradient-text">Showcase</span>
+    </motion.div>
+  );
+};
+
+const ShowcaseSubtitle: React.FC = () => {
+  const subtitleRef = useRef(null);
+  const isSubtitleInView = useInView(subtitleRef, { once: false, margin: "-100px" });
+
+  return (
+    <motion.p
+      ref={subtitleRef}
+      className="apple-body white-intense max-w-2xl mx-auto"
+      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+      animate={isSubtitleInView ? {
+        opacity: 1,
+        scale: 1,
+        y: 0
+      } : {
+        opacity: 0,
+        scale: 0.8,
+        y: 20
+      }}
+      transition={{
+        duration: 1.2,
+        delay: 0.2,
+        ease: [0.25, 0.1, 0.25, 1],
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }}
+    >
+      A glimpse of the dashboard and analytics with Apple-like spacing and clarity.
+    </motion.p>
+  );
+};
 
 const features = [
   {
@@ -66,6 +131,49 @@ const features = [
     icon: Shield,
     title: 'Secure & Reliable',
     description: 'Enterprise-grade security with 99.9% uptime guarantee',
+  },
+];
+
+const professionalFeatures = [
+  {
+    icon: Bot,
+    title: 'Advanced AI Conversations',
+    description: 'Context-aware AI that learns from interactions and provides increasingly intelligent responses',
+  },
+  {
+    icon: Globe,
+    title: 'Multi-Language Intelligence',
+    description: 'Automatic language detection and translation for seamless global customer support',
+  },
+  {
+    icon: Users,
+    title: 'Enterprise CRM Integration',
+    description: 'Seamlessly connect with Salesforce, HubSpot, and other major CRM platforms',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Custom Workflow Builder',
+    description: 'Drag-and-drop interface to create complex automation flows with conditional logic',
+  },
+  {
+    icon: BarChart3,
+    title: 'Advanced Analytics & Reporting',
+    description: 'Deep insights with predictive analytics, customer sentiment analysis, and ROI tracking',
+  },
+  {
+    icon: Shield,
+    title: 'Enterprise Security & Compliance',
+    description: 'GDPR compliant with end-to-end encryption, audit logs, and role-based access control',
+  },
+  {
+    icon: Zap,
+    title: 'API & Webhook Integrations',
+    description: 'Connect with your existing tools via REST APIs and real-time webhook notifications',
+  },
+  {
+    icon: Clock,
+    title: 'Priority Support & SLA',
+    description: 'Dedicated account manager with guaranteed response times and 24/7 technical support',
   },
 ];
 
@@ -148,114 +256,149 @@ const FeaturesGrid: React.FC<{ features: typeof features }> = ({ features }) => 
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  // Calculate rows for staggered row-by-row animation
+  const itemsPerRow = {
+    base: 1, // Mobile: 1 column
+    md: 2,   // Tablet: 2 columns
+    lg: 4    // Desktop: 4 columns
+  };
+
   return (
     <motion.div
       ref={ref}
-      className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      transition={{ staggerChildren: 0.2 }}
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
     >
       {features.map((feature, index) => {
         const Icon = feature.icon;
+
+        // Calculate row and column for staggered animation
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+        const isTablet = typeof window !== 'undefined' && window.innerWidth >= 768 && window.innerWidth < 1024;
+
+        let rowDelay = 0;
+        if (isMobile) {
+          rowDelay = index * 0.15; // Simple staggered for mobile
+        } else if (isTablet) {
+          const row = Math.floor(index / 2);
+          rowDelay = row * 0.2; // Row by row for tablet
+        } else {
+          const row = Math.floor(index / 4);
+          rowDelay = row * 0.25; // Row by row for desktop
+        }
+
+        const itemDelay = isMobile ? 0 : (index % (isTablet ? 2 : 4)) * 0.1;
+
         return (
           <motion.div
             key={index}
             initial={{
               opacity: 0,
-              y: 16,
-              filter: 'blur(4px)'
+              y: 24,
+              scale: 0.96,
+              filter: 'blur(6px)'
             }}
             animate={isInView ? {
               opacity: 1,
               y: 0,
+              scale: 1,
               filter: 'blur(0px)'
             } : {
               opacity: 0,
-              y: 16,
-              filter: 'blur(4px)'
+              y: 24,
+              scale: 0.96,
+              filter: 'blur(6px)'
             }}
             transition={{
-              duration: 0.8,
-              ease: "easeInOut",
-              delay: index * 0.2
+              duration: 1.2,
+              delay: rowDelay + itemDelay,
+              ease: [0.25, 0.1, 0.25, 1], // Apple-like smooth easing
             }}
             whileHover={{
-              y: -8,
-              boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-              transition: { duration: 0.3 }
+              y: -12,
+              scale: 1.02,
+              transition: {
+                duration: 0.4,
+                ease: [0.25, 0.1, 0.25, 1]
+              }
             }}
             className="relative group"
           >
-            {/* Light sweep effect */}
+            {/* Enhanced glow effect on hover */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent rounded-lg pointer-events-none"
-              initial={{ x: '-100%' }}
-              animate={isInView ? { x: '100%' } : { x: '-100%' }}
-              transition={{
-                duration: 1.2,
-                delay: 0.4 + index * 0.2,
-                ease: "easeInOut"
-              }}
+              className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100"
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
             />
 
-            <Card className="white-card p-6 backdrop-blur-xl border border-white/20 shadow-lg relative overflow-hidden transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-xl">
+            <Card className="white-card p-6 backdrop-blur-xl border border-white/20 shadow-lg relative overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:shadow-2xl">
               <div className="relative z-10">
-                {/* Icon with animations */}
+                {/* Icon with enhanced animations */}
                 <div className="mb-4">
                   <motion.div
-                    className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg"
-                    initial={{ scale: 0 }}
-                    animate={isInView ? { scale: 1 } : { scale: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.3 + index * 0.2,
-                      type: "spring",
-                      stiffness: 200
+                    className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg relative overflow-hidden"
+                    whileHover={{
+                      boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)",
+                      transition: { duration: 0.3 }
                     }}
                   >
+                    {/* Icon glow effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-30 blur-md"
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 0.3 }}
+                      transition={{ duration: 0.3 }}
+                    />
                     <motion.div
                       animate={isInView ? {
-                        scale: [1, 1.1, 1],
-                        filter: ["brightness(1)", "brightness(1.1)", "brightness(1)"]
-                      } : {}}
+                        scale: [0.8, 1.1, 1],
+                        rotate: [0, 5, 0]
+                      } : { scale: 0.8 }}
                       transition={{
-                        duration: 0.5,
-                        delay: 0.8 + index * 0.2,
-                        ease: "easeInOut"
+                        duration: 0.8,
+                        delay: rowDelay + itemDelay + 0.3,
+                        ease: [0.25, 0.1, 0.25, 1]
                       }}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-white relative z-10" />
                     </motion.div>
                   </motion.div>
                 </div>
 
-                {/* Content */}
+                {/* Content with enhanced hover effects */}
                 <motion.h3
-                  className="apple-h3 mb-2"
+                  className="apple-h3 mb-2 transition-all duration-300 group-hover:text-primary"
                   initial={{ opacity: 0, y: 8 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
                   transition={{
-                    duration: 0.6,
-                    delay: 0.4 + index * 0.2,
-                    ease: "easeOut"
+                    duration: 0.8,
+                    delay: rowDelay + itemDelay + 0.4,
+                    ease: [0.25, 0.1, 0.25, 1]
                   }}
                 >
                   {feature.title}
                 </motion.h3>
                 <motion.p
-                  className="apple-body"
+                  className="apple-body transition-all duration-300 group-hover:text-white/90"
                   initial={{ opacity: 0, y: 8 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
                   transition={{
-                    duration: 0.6,
-                    delay: 0.6 + index * 0.2,
-                    ease: "easeOut"
+                    duration: 0.8,
+                    delay: rowDelay + itemDelay + 0.6,
+                    ease: [0.25, 0.1, 0.25, 1]
                   }}
                 >
                   {feature.description}
                 </motion.p>
               </div>
+
+              {/* Subtle border animation */}
+              <motion.div
+                className="absolute inset-0 rounded-lg border border-primary/0 group-hover:border-primary/30"
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
             </Card>
           </motion.div>
         );
@@ -266,19 +409,31 @@ const FeaturesGrid: React.FC<{ features: typeof features }> = ({ features }) => 
 
 export function Landing() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black safe-area-top safe-area-bottom">
       <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-whatsapp/10 pointer-events-none" />
-        <div className="section-container relative">
+        {/* Background Video */}
+        <div className="absolute inset-0 bg-black pointer-events-none flex items-start justify-start pt-4 overflow-hidden">
+          <video
+            src="/media/vedios/homex.mp4"
+            aria-hidden="true"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full max-w-[99vw] h-auto object-cover opacity-45"
+            style={{ maxHeight: '99vh' }}
+          />
+        </div>
+        <div className="section-container relative z-10">
           <div className="text-center max-w-4xl mx-auto animate-fade-in relative z-20">
             <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass border border-border/50 mb-6 animate-fade-in">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium white-intense">AI-Powered WhatsApp Automation</span>
             </div>
-            <AppleTextReveal className="mb-6">Reinvent Your WhatsApp Business</AppleTextReveal>
+            <AppleTextReveal className="mb-6">ReinventYourWhatsAppBusiness</AppleTextReveal>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
               Automate conversations, manage customers, and grow faster — with the simplicity of Apple-level design.
             </p>
@@ -318,19 +473,15 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Apple Text Scroll Reveal Section */}
-      <AppleTextScrollReveal />
+      {/* Premium WhatsApp Mockup Section */}
+      <PremiumWhatsAppMockup />
 
       {/* Product UI Showcase */}
       <section id="showcase" className="py-20 px-4 bg-black">
         <div className="section-container">
           <div className="text-center mb-12">
-            <ScrollTextReveal className="apple-h2 apple-heading-tight white-intense">
-              Product UI <span className="gradient-text">Showcase</span>
-            </ScrollTextReveal>
-            <ScrollTextReveal className="apple-body white-intense max-w-2xl mx-auto" delay={0.1}>
-              A glimpse of the dashboard and analytics with Apple-like spacing and clarity.
-            </ScrollTextReveal>
+            <ShowcaseTitle />
+            <ShowcaseSubtitle />
           </div>
 
           <div className="mb-10">
@@ -389,11 +540,11 @@ export function Landing() {
       <section id="features" className="py-20 px-4 dark-section">
         <div className="section-container">
           <div className="text-center mb-16">
-            <ScrollTextReveal className="apple-h2 apple-heading-tight white-intense mb-4">
-              Powerful Features for <span className="gradient-text">Growing Businesses</span>
-            </ScrollTextReveal>
+            <CinematicLetterReveal className="apple-h2 apple-heading-tight white-intense mb-4">
+              Business, Made Smarter.
+            </CinematicLetterReveal>
             <ScrollTextReveal className="apple-body white-intense max-w-2xl mx-auto" delay={0.1}>
-              Everything you need to automate, engage, and convert customers on WhatsApp
+              One platform for automation, engagement, and growth.
             </ScrollTextReveal>
           </div>
 
@@ -401,8 +552,24 @@ export function Landing() {
         </div>
       </section>
 
+      {/* Professional Automation Section */}
+      <section id="professional" className="py-20 px-4 dark-section">
+        <div className="section-container">
+          <div className="text-center mb-16">
+            <CinematicLetterReveal className="apple-h2 apple-heading-tight white-intense mb-4">
+              Professional Automation Suite
+            </CinematicLetterReveal>
+            <ScrollTextReveal className="apple-body white-intense max-w-2xl mx-auto" delay={0.1}>
+              Enterprise-grade features for businesses that demand the highest level of intelligence and reliability
+            </ScrollTextReveal>
+          </div>
+
+          <FeaturesGrid features={professionalFeatures} />
+        </div>
+      </section>
+
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-muted/30">
+      <section id="pricing" className="py-20 px-4 dark-section">
         <div className="section-container">
           <div className="text-center mb-16">
             <ScrollTextReveal className="apple-h2 apple-heading-tight white-intense mb-4">
@@ -413,7 +580,7 @@ export function Landing() {
             </ScrollTextReveal>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {plans.map((plan, index) => (
               <Card
                 key={index}

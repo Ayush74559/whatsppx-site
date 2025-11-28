@@ -40,8 +40,8 @@ export function CRM() {
       await customerService.deleteCustomer(id);
       setCustomers(customers.filter((c) => c.id !== id));
       toast.success('Customer deleted');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete customer');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to delete customer'));
     }
   };
 

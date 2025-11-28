@@ -63,8 +63,8 @@ export function Conversations() {
       await conversationService.sendMessage(selectedConversation.id, message);
       setMessage('');
       loadMessages(selectedConversation.id);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to send message');
+    } catch (error: unknown) {
+      toast.error((error instanceof Error ? error.message : 'Failed to send message'));
     }
   };
 
@@ -112,8 +112,8 @@ export function Conversations() {
             <div className="p-4 border-b border-border/50">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search conversations..." 
+                <Input
+                  placeholder="Search conversations..."
                   className="pl-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -226,7 +226,7 @@ export function Conversations() {
                       }
                     }}
                   />
-                  <Button 
+                  <Button
                     className="bg-whatsapp hover:bg-whatsapp-dark"
                     onClick={handleSendMessage}
                     disabled={!message.trim()}

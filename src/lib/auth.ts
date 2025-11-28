@@ -7,20 +7,20 @@ export function mapSupabaseUser(user: User): AuthUser {
   return {
     id: user.id,
     email: user.email!,
-    name: user.user_metadata?.name || user.user_metadata?.full_name || user.email!.split('@')[0],
+    username: user.user_metadata?.username || user.user_metadata?.name || user.user_metadata?.full_name || user.email!.split('@')[0],
     avatar: user.user_metadata?.avatar_url || user.user_metadata?.picture,
   }
 }
 
 class AuthService {
   // Email/Password signup
-  async signUp(email: string, password: string, name: string) {
+  async signUp(email: string, password: string, username: string) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          name,
+          username,
         },
       },
     })
