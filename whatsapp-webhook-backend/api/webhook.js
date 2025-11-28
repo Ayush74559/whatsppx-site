@@ -1,21 +1,16 @@
 export default function handler(req, res) {
-  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'whatsappx2025';
+  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
 
   if (req.method === 'GET') {
-    // Meta Webhook Verification
-    console.log('🔍 Verification Request:', req.query);
-
     const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
 
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-      console.log('✅ Webhook Verified Successfully');
       return res.status(200).send(challenge);
     }
 
-    console.error('❌ Verification Failed - Token:', token);
-    return res.status(403).send('Verification failed');
+    res.sendStatus(403);
   }
 
   if (req.method === 'POST') {
