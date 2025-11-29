@@ -13,7 +13,7 @@
       "destination": "/api/webhook"
     },
     {
-      "source": "^/(?!assets/|api/|_next/|media/|favicon.ico|robots.txt)(.*)$",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
