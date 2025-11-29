@@ -20,6 +20,15 @@ export default async function handler(req, res) {
       }
     } else if (req.method === 'POST') {
       console.log('📨 WhatsApp POST received');
+
+      const body = req.body || {};
+      console.log('Body:', JSON.stringify(body));
+
+      if (body.object === 'whatsapp_business_account') {
+        console.log('✅ Valid WhatsApp event');
+        // Process messages here if needed
+      }
+
       res.status(200).send('EVENT_RECEIVED');
     } else {
       console.log(`❌ Method ${req.method} not allowed`);
