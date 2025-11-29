@@ -1,124 +1,106 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 
-// Load environment variables
+// Load local environment variables for dev. (Vercel provides env vars in production.)
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+export default async function handler(req, res) {
+  try {
+    const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || "whatsappx2025";
 
-// Middleware
-app.use(express.json());
+    if (req.method === "GET") {
+      const mode = req.query["hub.mode"];
+      const token = req.query["hub.verify_token"];
+      const challenge = req.query["hub.challenge"];
 
-// Health check endpoint
-app.get('/', (req, res) => {
-  res.json({
-    status: 'OK',
-    message: 'WhatsApp Webhook Server is running',
-    timestamp: new Date().toISOString()
-  });
-});
+      // Avoid logging secret values directly
+      console.log("VERIFY REQUEST:", { mode, token: token ? '***' : undefined });
 
-// Meta Webhook Verification
-app.get('/webhook', (req, res) => {
-  console.log('🔍 Webhook Verification Request:', req.query);
+      if (mode === "subscribe" && token === VERIFY_TOKEN) {
+        console.log("✅ Webhook verified");
+        return res.status(200).send(challenge);
+      }
 
-  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
+      return res.status(403).json({ success: false, error: 'verification_failed' });
+    }
 
-  if (!VERIFY_TOKEN) {
-    console.error('❌ WHATSAPP_VERIFY_TOKEN not set');
-    return res.status(500).send('Server configuration error');
-  }
-
-  const mode = req.query['hub.mode'];
-  const token = req.query['hub.verify_token'];
-  const challenge = req.query['hub.challenge'];
-
-  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-    console.log('✅ Webhook Verified Successfully');
-    return res.status(200).send(challenge);
-  }
-
-  console.error('❌ Verification Failed - Token:', token);
-  return res.status(403).send('Verification failed');
-});
-
-// WhatsApp Message Handler
-app.post('/webhook', (req, res) => {
-  console.log('📨 Incoming Webhook:', JSON.stringify(req.body, null, 2));
-
-  const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN;
-
-  // Verify request is from Meta (optional but recommended)
-  // You can add signature verification here
-
-  if (req.body.object === 'whatsapp_business_account') {
-    req.body.entry.forEach(entry => {
-      entry.changes.forEach(change => {
-        if (change.field === 'messages') {
-          change.value.messages.forEach(message => {
-            console.log('💬 New Message:', message);
-
-            // TODO: Add your message processing logic here
-            // - Save to database
-            // - Send auto-replies
-            // - Trigger workflows
-            // - Update CRM
-          });
+    if (req.method === "POST") {
+      // Validate signature
+      const signature = req.headers['x-hub-signature-256'];
+      const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+      if (accessToken && signature) {
+        const expectedSignature = 'sha256=' + crypto.createHmac('sha256', accessToken).update(JSON.stringify(req.body)).digest('hex');
+        if (signature !== expectedSignature) {
+          console.log('❌ Invalid signature');
+          return res.status(401).json({ success: false, error: 'invalid_signature' });
         }
-      });
-    });
+      }
+
+      console.log("📩 Incoming Event:", JSON.stringify(req.body, null, 2));
+
+      // Validate webhook payload
+      const body = req.body;
+      if (!body || !body.object) {
+        console.log('❌ Invalid webhook payload');
+        return res.status(400).json({ success: false, error: 'invalid_payload' });
+      }
+
+      // Process entries if they exist
+      if (body.entry && Array.isArray(body.entry)) {
+        body.entry.forEach(entry => {
+          if (entry.messaging && Array.isArray(entry.messaging)) {
+            entry.messaging.forEach(message => {
+              console.log('💬 Message received:', {
+                from: message.sender?.id,
+                message: message.message?.text?.body,
+                timestamp: message.timestamp
+              });
+            });
+          }
+        });
+      }
+
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(405).json({ success: false, error: 'method_not_allowed' });
+
+  } catch (err) {
+    console.error("WEBHOOK CRASH:", err);
+    return res.status(500).json({ success: false, error: 'internal_server_error' });
   }
-
-  // Always respond with 200 OK to acknowledge receipt
-  res.status(200).send('OK');
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-// Start server (for local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
 }
 
-// WhatsApp API endpoints for frontend
-app.post('/api/subscribe-webhooks', async (req, res) => {
-  try {
-    const { businessAccountId, systemUserToken } = req.body;
+// Local dev helper: when LOCAL_DEV=true is set (see package.json "dev" script)
+// start an Express server so you can test GET/POST against /api/webhook locally.
+if (process.env.LOCAL_DEV) {
+  (async () => {
+    try {
+      const expressImport = await import('express');
+      const express = expressImport.default || expressImport;
+      const app = express();
+      const PORT = process.env.PORT || 3000;
 
-    if (!businessAccountId || !systemUserToken) {
-      return res.status(400).json({ error: 'Business Account ID and System User Token are required' });
+      app.use(express.json({ limit: '5mb' }));
+
+      // Health
+      app.get('/', (req, res) => res.json({ service: 'whatsappx-webhook-backend', ok: true }));
+
+      // Mount the handler at /api/webhook
+      app.all('/api/webhook', async (req, res) => {
+        try {
+          await handler(req, res);
+        } catch (err) {
+          console.error('Handler error in local express wrapper:', err);
+          res.status(500).json({ success: false, error: 'internal_server_error' });
+        }
+      });
+
+      app.listen(PORT, () => {
+        console.log(`✅ Local webhook dev server listening on http://localhost:${PORT}/api/webhook`);
+      });
+    } catch (err) {
+      console.error('Failed to start local dev Express server:', err);
     }
-
-    const response = await fetch(`https://graph.facebook.com/v24.0/${businessAccountId}/subscribed_apps`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${systemUserToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}), // Empty JSON body
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.success === true) {
-      console.log('✅ Successfully subscribed to webhooks via backend');
-      res.json({ success: true, message: 'Successfully subscribed to webhooks' });
-    } else {
-      console.error('❌ Failed to subscribe to webhooks:', data);
-      res.status(response.status).json({ success: false, error: data });
-    }
-  } catch (error) {
-    console.error('❌ Error subscribing to webhooks:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// Export for Vercel
-export default app;
+  })();
+}

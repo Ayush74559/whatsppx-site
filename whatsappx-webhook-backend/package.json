@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "node index.js",
+    "dev": "LOCAL_DEV=true node index.js",
     "build": "echo 'Express app - no build needed for Vercel deployment'"
   },
   "dependencies": {
