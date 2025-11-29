@@ -2,6 +2,17 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/webhook.js": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/webhook",
+      "destination": "/api/webhook"
+    }
+  ],
   "routes": [
     {
       "src": "^\/(?!assets\/|api\/|_next\/|media\/|favicon.ico|robots.txt)(.*)$",

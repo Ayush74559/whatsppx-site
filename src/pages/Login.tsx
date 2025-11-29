@@ -51,7 +51,7 @@ export function Login() {
         provider: 'google',
         options: { redirectTo },
       });
-if (error) throw error;
+ if (error) throw error;
       // Supabase will redirect to the OAuth provider. Session handled on redirect back.
     } catch (err: unknown) {
       console.log(err)
